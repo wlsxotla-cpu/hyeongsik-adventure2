@@ -6,7 +6,7 @@
 <title>형식이의 모험 — 자녀양육편</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <style>
   :root{
     color-scheme: light dark;
@@ -30,27 +30,15 @@
     --text-sub:#a8886a;
     --shadow: 0 20px 46px rgba(200,140,90,.24), 0 4px 12px rgba(200,140,90,.16);
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --backdrop:#241a12;
-      --backdrop-2:#1a120c;
-      --paper:#2e2318;
-      --paper-line:#4a3a28;
-      --paper-shadow:#3a2c1e;
-      --text-on-paper:#f5e9d9;
-      --text-sub:#c9ac8c;
-      --shadow: 0 20px 50px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.35);
-    }
-  }
   :root[data-theme="dark"]{
-    --backdrop:#241a12;
-    --backdrop-2:#1a120c;
-    --paper:#2e2318;
-    --paper-line:#4a3a28;
-    --paper-shadow:#3a2c1e;
-    --text-on-paper:#f5e9d9;
-    --text-sub:#c9ac8c;
-    --shadow: 0 20px 50px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.35);
+    --backdrop:#fdf1e2;
+    --backdrop-2:#f8e2c5;
+    --paper:#fffaf1;
+    --paper-line:#f0d9bd;
+    --paper-shadow:#fbeed7;
+    --text-on-paper:#4a3728;
+    --text-sub:#a8886a;
+    --shadow: 0 20px 46px rgba(200,140,90,.24), 0 4px 12px rgba(200,140,90,.16);
   }
   :root[data-theme="light"]{
     --backdrop:#fdf1e2;
@@ -81,7 +69,7 @@
   }
   button{ touch-action:manipulation; font-family:inherit; }
   .mono{ font-family: ui-monospace, "SFMono-Regular", Consolas, "Noto Sans Mono", monospace; font-variant-numeric: tabular-nums; }
-  .diary-font{ font-family:"Gaegu","Apple SD Gothic Neo","Malgun Gothic",sans-serif; }
+  .diary-font{ font-family:"Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif; letter-spacing:.01em; }
 
   .book{
     width:100%; max-width:460px;
@@ -438,7 +426,7 @@
       <div class="holder">
         <span class="holder-avatar">🧑‍💼</span>
         <div>
-          <div class="holder-name">주인공 · 형식</div>
+          <div class="holder-name" id="holderName">주인공 · 형식 (32세)</div>
           <div class="holder-sub" id="statusSub">서울 강동구 빌라 거주 · 기혼</div>
         </div>
       </div>
@@ -516,6 +504,26 @@
   </div>
 
   <div class="ledger">
+    <div class="ledger-head diary-font">🏠 갭투자 · 힐스테이트 오피스텔</div>
+    <div class="insert-card" style="padding:14px 14px 16px;">
+      <div class="stock-row">
+        <span class="stock-price mono" id="realtyPrice">50,000,000원</span>
+        <span class="stock-hold" id="realtyHold">보유 0채 · 평단가 0원</span>
+      </div>
+      <div class="stock-news mono" id="realtyNews"></div>
+      <div class="stock-chart-wrap">
+        <canvas class="mkt-chart" id="realtyChart"></canvas>
+        <div class="stock-tooltip" id="realtyTooltip"></div>
+      </div>
+      <div class="stock-pl mono" id="realtyPL">평가금액 0원</div>
+      <div class="stock-btns">
+        <button class="mkt-buyall" id="realtyBuyAll">전액 매수</button>
+        <button class="mkt-sell" id="realtySell">전량 매도</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ledger">
     <div class="ledger-head diary-font">🎫 복권방 · 인생 한 방</div>
     <button class="lotto-btn" id="lottoBtn">🎟️ 로또 5장 사기 (50,000원)</button>
     <div class="lotto-result" id="lottoResult">긁지 않은 복권...</div>
@@ -557,6 +565,7 @@
 
   const SAVE_KEY = "hyeongsik_adventure_childrearing_v1";
   const MARKET_HISTORY_MAX = 40;
+  const AGE_MS_PER_YEAR = 20 * 60 * 1000; // 현실 20분 = 게임 속 1년
 
   const state = {
     money: 0,
@@ -569,10 +578,16 @@
                 drift:0.004, vol:0.05, tickMs:2000, limitCooldownUntil:0, hint:null, newsText:"", calm:false },
       gold:   { name:"돌반지 금", price:450000, minPrice:100000, unit:"돈",
                 shares:0, avgPrice:0, dir:1, history:[], historyFlags:[],
-                drift:0.0015, vol:0.015, tickMs:5000, limitCooldownUntil:0, hint:null, newsText:"", calm:true }
+                drift:0.0015, vol:0.015, tickMs:5000, limitCooldownUntil:0, hint:null, newsText:"", calm:true },
+      realty: { name:"힐스테이트 오피스텔", price:50000000, minPrice:5000000, unit:"채",
+                shares:0, avgPrice:0, dir:1, history:[], historyFlags:[],
+                drift:0.003, vol:0.02, tickMs:4000, limitCooldownUntil:0, hint:null, newsText:"",
+                rentYieldPerSec:0.00008 }
     },
     family: { kids:0 },
     modalQueue: [],
+    startedAt: Date.now(),
+    startAge: 32,
     stageIndex: 0,
     currentHome: "서울 강동구 빌라 거주 · 기혼",
     postGoal: null,
@@ -690,6 +705,10 @@
     return state.family.kids > 0 ? " · 슬하 " + state.family.kids + "명" : "";
   }
 
+  function currentAge(){
+    return state.startAge + Math.floor((Date.now() - state.startedAt) / AGE_MS_PER_YEAR);
+  }
+
   function updateStageText(progress){
     let cur = flavorPhrases[0];
     for(const s of flavorPhrases){ if(progress >= s.p) cur = s; }
@@ -700,10 +719,15 @@
 
   function currentClickValue(){ return state.clickBase * state.clickMult; }
   function currentCps(){ return state.cps * state.clickMult; }
+  function realtyRentRate(){
+    const r = state.markets.realty;
+    return r.shares > 0 ? r.price * r.shares * r.rentYieldPerSec : 0;
+  }
+  function totalIncomeRate(){ return currentCps() + realtyRentRate(); }
 
   function render(){
     document.getElementById("moneyDisplay").textContent = Math.floor(state.money).toLocaleString("ko-KR");
-    document.getElementById("incomeDisplay").textContent = "+" + fmt(currentCps()) + " / 초";
+    document.getElementById("incomeDisplay").textContent = "+" + fmt(totalIncomeRate()) + " / 초";
     document.getElementById("clickValueText").textContent = "클릭당 +" + fmt(currentClickValue());
     const goal = currentGoal();
     document.getElementById("goalText").textContent = fmt(goal);
@@ -712,6 +736,7 @@
     document.getElementById("progressFill").style.width = (progress*100).toFixed(1) + "%";
     document.getElementById("progressText").textContent = (progress*100).toFixed(1) + "%";
     updateStageText(progress);
+    document.getElementById("holderName").textContent = `주인공 · 형식 (${currentAge()}세)`;
 
     MARKET_KEYS.forEach(renderMarket);
 
@@ -1045,7 +1070,7 @@
   // ---- Lotto ---- (5장 묶음 구매, 당첨 확률 완화)
   const LOTTO_COST = 50000;
   const LOTTO_COUNT = 5;
-  const LOTTO_COOLDOWN_MS = 1500;
+  const LOTTO_COOLDOWN_MS = 1000;
   const LOTTO_TIERS = [
     { label:"1등", prize:2000000000, p:1/200000 },
     { label:"2등", prize:30000000,   p:1/20000 },
@@ -1175,7 +1200,7 @@
           ? `형식이는 마침내 <b>${s.home}</b>의 주인이 되었습니다.`
           : `이제 <b>${s.home}</b>에 삽니다.`,
         desc2: isFinal
-          ? "강동구 빌라에서 시작해 노원, 동대문, 수지를 거쳐 잠실까지 — 형식이의 내 집 마련 대장정이 여기서 마무리됩니다. 축하합니다."
+          ? `강동구 빌라에서 시작해 노원, 동대문, 수지를 거쳐 잠실까지 — 형식이의 내 집 마련 대장정이 여기서 마무리됩니다. 형식이는 <b>만 ${currentAge()}세</b>에 잠실 40평대 아파트의 주인이 되었습니다. 축하합니다.`
           : "다음 목표를 향해 계속 나아가볼까요?",
         btnText: isFinal ? "계속 플레이하기 (더 큰 집으로)" : "계속하기"
       });
@@ -1207,8 +1232,9 @@
 
   setInterval(()=>{
     state.lastActiveAt = Date.now();
-    if(currentCps() > 0){
-      state.money += currentCps() / 5;
+    const rate = totalIncomeRate();
+    if(rate > 0){
+      state.money += rate / 5;
       render();
     }
   }, 200);
@@ -1274,7 +1300,7 @@
     state.lastActiveAt = now;
     if(elapsedSec < 30) return;
     elapsedSec = Math.min(elapsedSec, OFFLINE_CAP_SEC);
-    const income = currentCps() * elapsedSec;
+    const income = totalIncomeRate() * elapsedSec;
     if(income > 0){
       pendingOffline = { income, elapsedSec };
       updateOfflineButton();
