@@ -4,48 +4,63 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>형식이의 모험 — 자녀양육편</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
     color-scheme: light dark;
-    --ink-900:#0f2038;
-    --ink-700:#1b3457;
-    --ink-600:#274571;
-    --paper:#f5efdc;
-    --paper-line:#d9cead;
-    --paper-shadow:#e6dcbc;
-    --brass:#b1872f;
-    --brass-light:#d9b45c;
-    --ink-red:#a53a32;
-    --ink-green:#2e6b48;
-    --backdrop:#e9e2cd;
-    --backdrop-2:#d8cfae;
-    --text-on-paper:#241d0f;
-    --text-sub:#7a6f52;
-    --shadow: 0 24px 60px rgba(15,32,56,.28), 0 4px 12px rgba(15,32,56,.16);
+    --ink-900:#5a4632;
+    --ink-700:#7a5c3e;
+    --ink-600:#a4805a;
+    --paper:#fffaf1;
+    --paper-line:#f0d9bd;
+    --paper-shadow:#fbeed7;
+    --brass:#ff8f6b;
+    --brass-light:#ffb199;
+    --mint:#3fa980;
+    --mint-light:#7fd8b8;
+    --ink-red:#ef6461;
+    --ink-green:#3fa980;
+    --lavender:#c9b6e4;
+    --yellow:#ffd873;
+    --backdrop:#fdf1e2;
+    --backdrop-2:#f8e2c5;
+    --text-on-paper:#4a3728;
+    --text-sub:#a8886a;
+    --shadow: 0 20px 46px rgba(200,140,90,.24), 0 4px 12px rgba(200,140,90,.16);
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --backdrop:#0a1220;
-      --backdrop-2:#050a12;
-      --paper:#efe6cc;
-      --paper-shadow:#ddd0a3;
-      --text-sub:#7a6f52;
-      --shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
+      --backdrop:#241a12;
+      --backdrop-2:#1a120c;
+      --paper:#2e2318;
+      --paper-line:#4a3a28;
+      --paper-shadow:#3a2c1e;
+      --text-on-paper:#f5e9d9;
+      --text-sub:#c9ac8c;
+      --shadow: 0 20px 50px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.35);
     }
   }
   :root[data-theme="dark"]{
-    --backdrop:#0a1220;
-    --backdrop-2:#050a12;
-    --paper:#efe6cc;
-    --paper-shadow:#ddd0a3;
-    --shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
+    --backdrop:#241a12;
+    --backdrop-2:#1a120c;
+    --paper:#2e2318;
+    --paper-line:#4a3a28;
+    --paper-shadow:#3a2c1e;
+    --text-on-paper:#f5e9d9;
+    --text-sub:#c9ac8c;
+    --shadow: 0 20px 50px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.35);
   }
   :root[data-theme="light"]{
-    --backdrop:#e9e2cd;
-    --backdrop-2:#d8cfae;
-    --paper:#f5efdc;
-    --paper-shadow:#e6dcbc;
-    --shadow: 0 24px 60px rgba(15,32,56,.28), 0 4px 12px rgba(15,32,56,.16);
+    --backdrop:#fdf1e2;
+    --backdrop-2:#f8e2c5;
+    --paper:#fffaf1;
+    --paper-line:#f0d9bd;
+    --paper-shadow:#fbeed7;
+    --text-on-paper:#4a3728;
+    --text-sub:#a8886a;
+    --shadow: 0 20px 46px rgba(200,140,90,.24), 0 4px 12px rgba(200,140,90,.16);
   }
 
   *{ box-sizing:border-box; }
@@ -54,6 +69,7 @@
     font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
     background:
       radial-gradient(ellipse at 30% -10%, var(--backdrop-2), transparent 60%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.4) 0 2px, transparent 2px 34px),
       var(--backdrop);
     color:var(--text-on-paper);
     min-height:100vh;
@@ -63,129 +79,153 @@
     padding:40px 16px 64px;
     touch-action:manipulation;
   }
-  button{ touch-action:manipulation; }
+  button{ touch-action:manipulation; font-family:inherit; }
   .mono{ font-family: ui-monospace, "SFMono-Regular", Consolas, "Noto Sans Mono", monospace; font-variant-numeric: tabular-nums; }
+  .diary-font{ font-family:"Gaegu","Apple SD Gothic Neo","Malgun Gothic",sans-serif; }
 
   .book{
     width:100%; max-width:460px;
-    border-radius:18px;
-    overflow:hidden;
+    border-radius:26px;
+    overflow:visible;
     box-shadow: var(--shadow);
     background:var(--paper);
+    position:relative;
   }
 
-  /* ---- Cover ---- */
+  /* ---- Cover (diary front page) ---- */
   .cover{
     position:relative;
+    overflow:hidden;
+    border-radius:26px 26px 0 0;
     background:
-      repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 2px, transparent 2px 6px),
-      linear-gradient(160deg, var(--ink-600), var(--ink-900) 70%);
-    color:#f2ead0;
-    padding:28px 26px 24px;
+      repeating-linear-gradient(135deg, rgba(255,255,255,.09) 0 3px, transparent 3px 9px),
+      linear-gradient(160deg, var(--brass-light), var(--brass) 75%);
+    color:#4a2c1e;
+    padding:34px 26px 26px;
+  }
+  .washi-tape{
+    position:absolute; top:-12px; left:28px; width:96px; height:30px;
+    background:repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 7px, rgba(255,216,153,.75) 7px 14px);
+    transform:rotate(-7deg);
+    box-shadow:0 3px 6px rgba(0,0,0,.12);
+    border-radius:2px;
+    opacity:.92;
+  }
+  .washi-tape.two{
+    left:auto; right:22px; top:-10px;
+    transform:rotate(8deg);
+    background:repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 7px, rgba(201,182,228,.75) 7px 14px);
   }
   .cover-top{
     display:flex; justify-content:space-between; align-items:baseline;
-    font-size:11px; letter-spacing:.06em; color:var(--brass-light); margin-bottom:18px;
+    font-size:11px; letter-spacing:.06em; color:#6b4326; margin-bottom:18px; margin-top:6px;
   }
   .bank-mark{ font-weight:700; }
   .passbook-no{ font-family: ui-monospace, Consolas, monospace; opacity:.85; }
   .refresh-btn{
     display:inline-flex; align-items:center; justify-content:center;
     width:22px; height:22px; border-radius:50%; margin-left:8px;
-    background:none; border:1px solid rgba(245,239,220,.4); color:#f2ead0;
+    background:rgba(255,255,255,.35); border:1px solid rgba(74,44,30,.25); color:#4a2c1e;
     font-size:12px; line-height:1; cursor:pointer; padding:0;
   }
-  .refresh-btn:hover{ background:rgba(245,239,220,.15); }
+  .refresh-btn:hover{ background:rgba(255,255,255,.55); }
   .refresh-btn:active{ transform:scale(.9); }
   .refresh-btn.spinning{ animation:spin .6s linear; }
   @keyframes spin{ to{ transform:rotate(360deg); } }
   @media (prefers-reduced-motion: reduce){ .refresh-btn.spinning{ animation:none; } }
   .title{
-    margin:0 0 6px; font-size:28px; font-weight:800; letter-spacing:-.01em; text-wrap:balance;
+    margin:0 0 6px; font-size:30px; font-weight:700; letter-spacing:-.01em; text-wrap:balance;
   }
-  .subtitle{ margin:0 0 20px; font-size:13px; color:#cdd8ea; }
+  .subtitle{ margin:0 0 20px; font-size:13.5px; color:#6b4326; }
   .holder-row{ display:flex; }
   .holder{
     display:flex; align-items:center; gap:10px;
-    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
-    border-radius:12px; padding:10px 14px;
+    background:rgba(255,255,255,.5); border:1px dashed rgba(74,44,30,.3);
+    border-radius:14px; padding:10px 14px;
   }
   .holder-avatar{ font-size:26px; }
-  .holder-name{ font-weight:700; font-size:13px; }
-  .holder-sub{ font-size:11.5px; color:#c9d3e4; margin-top:2px; }
+  .holder-name{ font-weight:700; font-size:13px; color:#4a2c1e; }
+  .holder-sub{ font-size:11.5px; color:#6b4326; margin-top:2px; }
 
   .perforation{
-    height:14px;
+    height:16px;
     background:var(--paper);
-    background-image: radial-gradient(circle, var(--backdrop) 2.6px, transparent 2.7px);
-    background-size: 16px 14px;
-    background-position: 8px center;
+    background-image: radial-gradient(circle, var(--backdrop) 2.8px, transparent 2.9px);
+    background-size: 18px 16px;
+    background-position: 9px center;
     border-bottom:1px dashed var(--paper-line);
   }
 
-  /* ---- Ledger sections ---- */
+  /* ---- Ledger sections (diary pages) ---- */
   .ledger{
-    padding:18px 22px;
-    border-bottom:1px solid var(--paper-line);
+    padding:20px 22px;
+    border-bottom:1px dashed var(--paper-line);
+    position:relative;
   }
   .ledger:last-of-type{ border-bottom:none; }
   .ledger-head{
-    font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--brass);
-    text-transform:uppercase; margin-bottom:12px;
+    font-size:14px; font-weight:700; letter-spacing:.01em; color:var(--brass);
+    margin-bottom:12px;
+    display:flex; align-items:center; gap:6px;
   }
 
   .balance-ledger{ background:linear-gradient(180deg, var(--paper-shadow), var(--paper) 70%); }
   .balance-row{ display:flex; align-items:baseline; gap:6px; }
-  .balance-figure{ font-size:34px; font-weight:700; letter-spacing:-.01em; }
+  .balance-figure{ font-size:36px; font-weight:700; letter-spacing:-.01em; }
   .won{ font-size:16px; color:var(--text-sub); font-weight:600; }
   .income-row{ font-size:12px; color:var(--ink-green); font-weight:600; margin-top:2px; font-family: ui-monospace, Consolas, monospace; }
 
-  .gauge{ margin-top:16px; }
+  .gauge{ margin-top:18px; }
   .gauge-track{
-    position:relative; height:14px; border-radius:8px;
+    position:relative; height:16px; border-radius:10px;
     background:repeating-linear-gradient(90deg, var(--paper-line) 0 1px, transparent 1px 10%);
-    background-color:#fffdf5; border:1px solid var(--paper-line);
-    overflow:hidden;
+    background-color:#fffdf8; border:1px solid var(--paper-line);
+    overflow:visible;
   }
   .gauge-fill{
-    height:100%; width:0%;
-    background:linear-gradient(90deg, var(--brass), var(--brass-light));
+    position:relative; height:100%; width:0%; border-radius:10px 0 0 10px;
+    background:linear-gradient(90deg, var(--mint-light), var(--brass-light));
     transition:width .5s ease;
+    overflow:visible;
+  }
+  .gauge-fill::after{
+    content:"🧒"; position:absolute; right:-11px; top:50%; transform:translateY(-50%);
+    font-size:18px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.25));
   }
   .gauge-labels{
     display:flex; justify-content:space-between; font-size:11px; color:var(--text-sub);
-    margin-top:6px; font-family: ui-monospace, Consolas, monospace;
+    margin-top:8px; font-family: ui-monospace, Consolas, monospace;
   }
   .stage-stamp{
-    margin-top:12px; font-size:12.5px; font-weight:700; color:var(--ink-700);
-    padding:8px 10px; border-left:3px solid var(--brass); background:rgba(177,135,47,.08);
-    border-radius:0 6px 6px 0;
+    margin-top:14px; font-size:12.5px; font-weight:700; color:var(--ink-700);
+    padding:9px 12px; border:1px dashed var(--brass); background:rgba(255,143,107,.08);
+    border-radius:10px;
   }
 
   /* ---- Work button ---- */
   .stamp-btn{
     width:100%; position:relative; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:4px;
-    padding:20px; border-radius:12px;
-    border:2px solid var(--ink-700);
-    background:linear-gradient(180deg, var(--ink-600), var(--ink-900));
-    color:#f2ead0; font-family:inherit;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 8px 18px rgba(15,32,56,.35);
+    padding:22px; border-radius:18px;
+    border:none;
+    background:linear-gradient(180deg, var(--brass-light), var(--brass));
+    color:#4a2c1e; font-family:inherit;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 10px 20px rgba(255,143,107,.35);
     transition:transform .08s ease;
   }
   .stamp-btn:active{ transform:scale(.97); }
-  .stamp-btn-label{ font-size:16px; font-weight:800; letter-spacing:.01em; }
-  .stamp-btn-sub{ font-size:11.5px; color:var(--brass-light); font-family: ui-monospace, Consolas, monospace; }
+  .stamp-btn-label{ font-size:17px; font-weight:700; letter-spacing:.01em; }
+  .stamp-btn-sub{ font-size:11.5px; color:#6b4326; font-family: ui-monospace, Consolas, monospace; }
   .auto-badge{
     position:absolute; top:10px; right:12px; display:none;
     font-size:10px; font-weight:700; letter-spacing:.03em;
-    background:var(--brass); color:var(--ink-900); padding:3px 9px; border-radius:20px;
+    background:#4a2c1e; color:#ffe3ce; padding:3px 9px; border-radius:20px;
   }
   .auto-badge.on{ display:inline-block; }
 
   .float{
     position:absolute; left:50%; top:-4px; transform:translateX(-50%);
-    color:#7fe3a8; font-weight:800; font-size:15px; pointer-events:none;
+    color:#1f6b4d; font-weight:800; font-size:15px; pointer-events:none;
     font-family: ui-monospace, Consolas, monospace;
     animation:floatUp 1s ease-out forwards;
   }
@@ -197,8 +237,13 @@
     .float{ animation:none; opacity:0; }
   }
 
-  /* ---- Stock/market insert ---- */
-  .insert-card{ background:repeating-linear-gradient(0deg, rgba(177,135,47,.05) 0 1px, transparent 1px 26px); }
+  /* ---- Stock/market insert (scrapbook cards) ---- */
+  .insert-card{
+    background:var(--paper);
+    border:1px dashed var(--paper-line);
+    border-radius:16px;
+    margin:4px 0;
+  }
   .stock-row{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; flex-wrap:wrap; gap:4px; }
   .stock-price{ font-size:22px; font-weight:700; font-family: ui-monospace, Consolas, monospace; }
   .stock-price.up{ color:var(--ink-green); }
@@ -213,7 +258,7 @@
   .mkt-chart{ display:block; width:100%; height:64px; cursor:crosshair; }
   .stock-tooltip{
     position:absolute; top:-4px; left:0; transform:translate(-50%,-100%);
-    background:var(--ink-900); color:#f2ead0; font-size:11px; font-weight:600;
+    background:var(--ink-900); color:#fff3e6; font-size:11px; font-weight:600;
     padding:4px 8px; border-radius:6px; white-space:nowrap; pointer-events:none;
     font-family: ui-monospace, Consolas, monospace; opacity:0; transition:opacity .1s ease;
   }
@@ -221,31 +266,31 @@
   .stock-btns{ display:flex; gap:8px; }
   .stock-btns + .stock-btns{ margin-top:8px; }
   .stock-btns button{
-    flex:1; padding:11px; border-radius:8px; font-weight:700; font-size:12.5px; cursor:pointer;
+    flex:1; padding:12px; border-radius:12px; font-weight:700; font-size:12.5px; cursor:pointer;
     border:1px solid transparent; font-family:inherit;
   }
-  .mkt-buyall{ background:var(--ink-green); color:#fff; }
+  .mkt-buyall{ background:var(--mint); color:#fff; }
   .mkt-sell{ background:transparent; color:var(--ink-red); border-color:var(--ink-red); }
   .stock-btns button:disabled{ background:var(--paper-line); color:var(--text-sub); border-color:transparent; cursor:not-allowed; }
 
-  /* ---- Upgrade ledger rows ---- */
-  .upg-item{ display:flex; align-items:baseline; gap:8px; padding:9px 0; }
+  /* ---- Upgrade rows (sticker list) ---- */
+  .upg-item{ display:flex; align-items:baseline; gap:8px; padding:10px 0; }
   .upg-name{ font-weight:700; font-size:13px; white-space:nowrap; }
   .upg-lv{ font-size:10.5px; color:var(--brass); font-weight:700; }
   .upg-leader{ flex:1; border-bottom:1px dotted var(--paper-line); min-width:12px; transform:translateY(-4px); }
   .upg-desc{ display:block; font-size:10.5px; color:var(--text-sub); margin-top:1px; }
   .upg-right{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
   .buy-btn{
-    padding:7px 11px; border:1px solid var(--ink-700); border-radius:7px; background:var(--ink-700); color:#f2ead0;
+    padding:8px 12px; border:none; border-radius:10px; background:var(--ink-700); color:#fff3e6;
     font-weight:700; font-size:11.5px; cursor:pointer; white-space:nowrap; font-family: ui-monospace, Consolas, monospace;
   }
-  .buy-btn:disabled{ background:transparent; color:var(--text-sub); border-color:var(--paper-line); cursor:not-allowed; }
-  .upg-row-wrap{ border-bottom:1px solid var(--paper-line); }
+  .buy-btn:disabled{ background:transparent; color:var(--text-sub); border:1px dashed var(--paper-line); cursor:not-allowed; }
+  .upg-row-wrap{ border-bottom:1px dashed var(--paper-line); }
   .upg-row-wrap:last-child{ border-bottom:none; }
 
-  /* ---- Transaction log ---- */
+  /* ---- Transaction log (diary entries) ---- */
   .log-item{
-    display:flex; gap:8px; align-items:flex-start; font-size:12px; padding:6px 0 6px 10px;
+    display:flex; gap:8px; align-items:flex-start; font-size:12px; padding:7px 0 7px 10px;
     border-left:3px solid var(--paper-line); border-bottom:1px dashed var(--paper-line);
   }
   .log-item:last-child{ border-bottom:none; }
@@ -253,51 +298,58 @@
   .log-item.loss{ border-left-color:var(--ink-red); }
   .log-item.event{ border-left-color:var(--brass); }
 
-  .cover-back{ padding:16px 22px; text-align:center; }
-  .back-note{ margin:0; font-size:11px; color:#b9c4d9; }
+  .cover-back{ padding:18px 22px; text-align:center; background:var(--paper-shadow); border-radius:0 0 26px 26px; }
+  .back-note{ margin:0; font-size:11px; color:var(--text-sub); }
 
-  /* ---- Ending modal ---- */
+  /* ---- Ending modal (polaroid) ---- */
   .modal-bg{
-    position:fixed; inset:0; background:rgba(10,18,32,.7); display:none;
+    position:fixed; inset:0; background:rgba(74,44,30,.55); display:none;
     align-items:center; justify-content:center; z-index:50; padding:20px;
   }
   .modal-bg.show{ display:flex; }
   .deed{
-    position:relative; background:var(--paper); border:1px solid var(--paper-line);
-    border-radius:14px; padding:40px 32px 32px; max-width:380px; text-align:center;
-    box-shadow:0 30px 70px rgba(0,0,0,.5); overflow:hidden;
+    position:relative; background:#fffdf9; border:1px solid var(--paper-line);
+    border-radius:4px; padding:44px 30px 30px; max-width:380px; text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.35), 0 0 0 10px #fffdf9, 0 0 0 11px var(--paper-line);
+    transform:rotate(-1.2deg);
+  }
+  .deed::before{
+    content:""; position:absolute; top:-14px; left:50%; transform:translateX(-50%) rotate(-4deg);
+    width:100px; height:28px;
+    background:repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 7px, rgba(255,216,153,.8) 7px 14px);
+    box-shadow:0 3px 6px rgba(0,0,0,.15); border-radius:2px;
   }
   .seal{
-    width:104px; height:104px; margin:0 auto 18px; border-radius:50%;
-    border:3px solid var(--ink-red); color:var(--ink-red);
+    width:100px; height:100px; margin:0 auto 18px; border-radius:50%;
+    border:3px dashed var(--brass); color:var(--brass);
     display:flex; align-items:center; justify-content:center;
-    font-size:26px; font-weight:800; letter-spacing:.05em;
-    transform:rotate(-11deg); mix-blend-mode:multiply;
-    box-shadow: inset 0 0 0 3px rgba(165,58,50,.25);
+    font-size:24px; font-weight:800; letter-spacing:.03em;
+    transform:rotate(-8deg);
+    background:rgba(255,143,107,.08);
   }
   .offline-btn{
-    width:100%; padding:14px; margin-bottom:10px; border-radius:10px; border:none;
-    background:linear-gradient(135deg, var(--brass), var(--brass-light)); color:var(--ink-900);
+    width:100%; padding:14px; margin-bottom:10px; border-radius:14px; border:none;
+    background:linear-gradient(135deg, var(--brass), var(--brass-light)); color:#4a2c1e;
     font-weight:800; font-size:14px; cursor:pointer; font-family:inherit;
-    box-shadow:0 6px 14px rgba(177,135,47,.35);
+    box-shadow:0 6px 14px rgba(255,143,107,.35);
   }
   .offline-btn:active{ transform:scale(.98); }
-  .deed h2{ margin:0 0 10px; font-size:21px; color:var(--ink-900); }
+  .deed h2{ margin:0 0 10px; font-size:23px; color:var(--ink-900); }
   .deed p{ font-size:13px; color:var(--text-sub); line-height:1.6; margin:0 0 6px; }
   .deed button{
-    margin-top:18px; padding:12px 22px; border:none; border-radius:9px;
-    background:var(--ink-700); color:#f2ead0; font-weight:700; cursor:pointer; font-size:13.5px;
+    margin-top:18px; padding:12px 24px; border:none; border-radius:14px;
+    background:var(--mint); color:#fff; font-weight:700; cursor:pointer; font-size:13.5px;
     font-family:inherit;
   }
   .deed button:focus-visible, .stamp-btn:focus-visible, .buy-btn:focus-visible,
   .stock-btns button:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
 
-  .reset-wrap{ text-align:center; margin-top:18px; }
+  .reset-wrap{ text-align:center; margin-top:20px; }
   .reset-btn{
-    background:none; border:1px solid rgba(255,255,255,.22); color:rgba(255,255,255,.5);
+    background:none; border:1px dashed rgba(90,70,50,.35); color:var(--text-sub);
     font-size:12px; padding:8px 16px; border-radius:20px; cursor:pointer; font-family:inherit;
   }
-  .reset-btn:hover{ color:#fff; border-color:rgba(255,255,255,.5); }
+  .reset-btn:hover{ color:var(--text-on-paper); border-color:rgba(90,70,50,.6); }
   .reset-btn:active{ transform:scale(.97); }
 
   /* ---- Toast ---- */
@@ -305,21 +357,21 @@
     position:fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-12px);
     max-width:min(420px, calc(100vw - 32px));
     display:flex; align-items:center; gap:8px;
-    padding:12px 16px; border-radius:10px; z-index:80;
+    padding:12px 16px; border-radius:14px; z-index:80;
     font-size:13px; font-weight:700; color:#fff;
-    box-shadow:0 12px 30px rgba(0,0,0,.35);
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
     opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-  .toast.warn{ background:linear-gradient(135deg,#a53a32,#7d2b25); }
-  .toast.gain{ background:linear-gradient(135deg,#2e6b48,#1f4d34); }
-  .toast.move{ background:linear-gradient(135deg,var(--brass),#8f6a1f); color:var(--ink-900); }
+  .toast.warn{ background:linear-gradient(135deg,#ef6461,#d54e4b); }
+  .toast.gain{ background:linear-gradient(135deg,#3fa980,#2c8867); }
+  .toast.move{ background:linear-gradient(135deg,var(--brass),#e06c45); }
   @media (prefers-reduced-motion: reduce){ .toast{ transition:opacity .01s linear; } }
 
   /* ---- Lotto ---- */
   .lotto-btn{
-    width:100%; padding:14px; border-radius:10px; border:2px dashed var(--brass);
-    background:repeating-linear-gradient(135deg, rgba(177,135,47,.08) 0 8px, rgba(177,135,47,.03) 8px 16px);
+    width:100%; padding:14px; border-radius:14px; border:2px dashed var(--lavender);
+    background:repeating-linear-gradient(135deg, rgba(201,182,228,.12) 0 8px, rgba(201,182,228,.04) 8px 16px);
     color:var(--ink-900); font-weight:800; font-size:14px; cursor:pointer; font-family:inherit;
   }
   .lotto-btn:disabled{ opacity:.45; cursor:not-allowed; }
@@ -335,11 +387,11 @@
   .book{ max-width:520px; }
   @media (min-width:760px){ .book{ max-width:600px; } }
   .cover-top{ font-size:12.5px; }
-  .title{ font-size:33px; }
+  .title{ font-size:34px; }
   .subtitle{ font-size:15px; }
   .holder-name{ font-size:15px; }
   .holder-sub{ font-size:13px; }
-  .ledger-head{ font-size:12.5px; }
+  .ledger-head{ font-size:15px; }
   .balance-figure{ font-size:42px; }
   .won{ font-size:18px; }
   .income-row{ font-size:14px; }
@@ -359,7 +411,7 @@
   .buy-btn{ font-size:13px; }
   .log-item{ font-size:13.5px; }
   .back-note{ font-size:12.5px; }
-  .deed h2{ font-size:24px; }
+  .deed h2{ font-size:25px; }
   .deed p{ font-size:15px; }
   .deed button{ font-size:15px; }
   .toast{ font-size:15px; }
@@ -374,17 +426,19 @@
 
 <div class="book">
   <div class="cover">
+    <div class="washi-tape"></div>
+    <div class="washi-tape two"></div>
     <div class="cover-top">
-      <span class="bank-mark">형식저축은행 <button class="refresh-btn" id="refreshBtn" title="최신 버전 새로 불러오기" aria-label="최신 버전 새로 불러오기">⟳</button></span>
-      <span class="passbook-no mono">No. HS-CR2</span>
+      <span class="bank-mark">🖍️ 형식이네 육아일기 <button class="refresh-btn" id="refreshBtn" title="최신 버전 새로 불러오기" aria-label="최신 버전 새로 불러오기">⟳</button></span>
+      <span class="passbook-no mono">1권 · 2026</span>
     </div>
-    <h1 class="title">형식이의 모험 · 자녀양육편</h1>
-    <p class="subtitle">노원 10평 → 동대문 20평 → 수지 30평 → 잠실 40평, 갈아타기 적립통장</p>
+    <h1 class="title diary-font">형식이의 모험 · 자녀양육편</h1>
+    <p class="subtitle">노원 10평 → 동대문 20평 → 수지 30평 → 잠실 40평, 우리 가족 집 넓히기 성장일기</p>
     <div class="holder-row">
       <div class="holder">
         <span class="holder-avatar">🧑‍💼</span>
         <div>
-          <div class="holder-name">예금주 · 형식</div>
+          <div class="holder-name">주인공 · 형식</div>
           <div class="holder-sub" id="statusSub">서울 강동구 빌라 거주 · 기혼</div>
         </div>
       </div>
@@ -394,7 +448,7 @@
   <div class="perforation"></div>
 
   <div class="ledger balance-ledger">
-    <div class="ledger-head">잔액 현황</div>
+    <div class="ledger-head diary-font">💰 우리집 자산</div>
     <div class="balance-row">
       <span class="balance-figure mono" id="moneyDisplay">0</span>
       <span class="won">원</span>
@@ -412,7 +466,7 @@
   </div>
 
   <div class="ledger">
-    <div class="ledger-head">입금 창구</div>
+    <div class="ledger-head diary-font">💪 오늘도 출근</div>
     <button class="offline-btn" id="offlineBtn" style="display:none;"></button>
     <button class="stamp-btn" id="workBtn">
       <span class="auto-badge" id="autoBadge">자동 출근중</span>
@@ -421,79 +475,65 @@
     </button>
   </div>
 
-  <div class="ledger insert-card">
-    <div class="ledger-head">투자 현황 · 형식전자</div>
-    <div class="stock-row">
-      <span class="stock-price mono" id="hsElecPrice">10,000원</span>
-      <span class="stock-hold" id="hsElecHold">보유 0주 · 평단가 0원</span>
-    </div>
-    <div class="stock-news mono" id="hsElecNews"></div>
-    <div class="stock-chart-wrap">
-      <canvas class="mkt-chart" id="hsElecChart"></canvas>
-      <div class="stock-tooltip" id="hsElecTooltip"></div>
-    </div>
-    <div class="stock-pl mono" id="hsElecPL">평가금액 0원</div>
-    <div class="stock-btns">
-      <button class="mkt-buyall" id="hsElecBuyAll">전액 매수</button>
-      <button class="mkt-sell" id="hsElecSell">전량 매도</button>
-    </div>
-  </div>
-
-  <div class="ledger insert-card">
-    <div class="ledger-head">투자 현황 · 형식닉스</div>
-    <div class="stock-row">
-      <span class="stock-price mono" id="hsNixPrice">3,000원</span>
-      <span class="stock-hold" id="hsNixHold">보유 0주 · 평단가 0원</span>
-    </div>
-    <div class="stock-news mono" id="hsNixNews"></div>
-    <div class="stock-chart-wrap">
-      <canvas class="mkt-chart" id="hsNixChart"></canvas>
-      <div class="stock-tooltip" id="hsNixTooltip"></div>
-    </div>
-    <div class="stock-pl mono" id="hsNixPL">평가금액 0원</div>
-    <div class="stock-btns">
-      <button class="mkt-buyall" id="hsNixBuyAll">전액 매수</button>
-      <button class="mkt-sell" id="hsNixSell">전량 매도</button>
-    </div>
-  </div>
-
-  <div class="ledger insert-card">
-    <div class="ledger-head">갭투자 부동산 · 힐스테이트 오피스텔</div>
-    <div class="stock-row">
-      <span class="stock-price mono" id="realtyPrice">50,000,000원</span>
-      <span class="stock-hold" id="realtyHold">보유 0채 · 평단가 0원</span>
-    </div>
-    <div class="stock-news mono" id="realtyNews"></div>
-    <div class="stock-chart-wrap">
-      <canvas class="mkt-chart" id="realtyChart"></canvas>
-      <div class="stock-tooltip" id="realtyTooltip"></div>
-    </div>
-    <div class="stock-pl mono" id="realtyPL">평가금액 0원</div>
-    <div class="stock-btns">
-      <button class="mkt-buyall" id="realtyBuyAll">전액 매수</button>
-      <button class="mkt-sell" id="realtySell">전량 매도</button>
+  <div class="ledger">
+    <div class="ledger-head diary-font">📈 투자 · 형식전자</div>
+    <div class="insert-card" style="padding:14px 14px 16px;">
+      <div class="stock-row">
+        <span class="stock-price mono" id="hsElecPrice">10,000원</span>
+        <span class="stock-hold" id="hsElecHold">보유 0주 · 평단가 0원</span>
+      </div>
+      <div class="stock-news mono" id="hsElecNews"></div>
+      <div class="stock-chart-wrap">
+        <canvas class="mkt-chart" id="hsElecChart"></canvas>
+        <div class="stock-tooltip" id="hsElecTooltip"></div>
+      </div>
+      <div class="stock-pl mono" id="hsElecPL">평가금액 0원</div>
+      <div class="stock-btns">
+        <button class="mkt-buyall" id="hsElecBuyAll">전액 매수</button>
+        <button class="mkt-sell" id="hsElecSell">전량 매도</button>
+      </div>
     </div>
   </div>
 
   <div class="ledger">
-    <div class="ledger-head">복권방 · 인생 한 방</div>
-    <button class="lotto-btn" id="lottoBtn">🎟️ 로또 한 장 사기 (1,000원)</button>
+    <div class="ledger-head diary-font">🪙 투자 · 돌반지 금</div>
+    <div class="insert-card" style="padding:14px 14px 16px;">
+      <div class="stock-row">
+        <span class="stock-price mono" id="goldPrice">450,000원</span>
+        <span class="stock-hold" id="goldHold">보유 0돈 · 평단가 0원</span>
+      </div>
+      <div class="stock-news mono" id="goldNews"></div>
+      <div class="stock-chart-wrap">
+        <canvas class="mkt-chart" id="goldChart"></canvas>
+        <div class="stock-tooltip" id="goldTooltip"></div>
+      </div>
+      <div class="stock-pl mono" id="goldPL">평가금액 0원</div>
+      <div class="stock-btns">
+        <button class="mkt-buyall" id="goldBuyAll">전액 매수</button>
+        <button class="mkt-sell" id="goldSell">전량 매도</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ledger">
+    <div class="ledger-head diary-font">🎫 복권방 · 인생 한 방</div>
+    <button class="lotto-btn" id="lottoBtn">🎟️ 로또 5장 사기 (50,000원)</button>
     <div class="lotto-result" id="lottoResult">긁지 않은 복권...</div>
-    <div class="lotto-odds">1등 20억원 (1/1,000,000) · 2등 3천만원 (1/100,000) · 3등 150만원 (1/5,000) · 4등 5만원 (1/300) · 5등 5천원 (1/20)</div>
+    <div class="lotto-odds">1등 20억원 (1/200,000) · 2등 3천만원 (1/20,000) · 3등 150만원 (1/1,000) · 4등 5만원 (1/60) · 5등 5천원 (1/8) · 장당 확률, 5장 동시 추첨</div>
   </div>
 
   <div class="ledger">
-    <div class="ledger-head">자동이체 등록 · 업그레이드</div>
+    <div class="ledger-head diary-font">⭐ 우리집 습관 스티커</div>
     <div id="upgradeList"></div>
   </div>
 
   <div class="ledger">
-    <div class="ledger-head">거래내역</div>
+    <div class="ledger-head diary-font">📝 오늘의 일기</div>
     <div id="logList"></div>
   </div>
 
-  <div class="cover cover-back">
-    <p class="back-note">이 통장은 이 브라우저에 자동 저장됩니다 (localStorage)</p>
+  <div class="cover-back">
+    <p class="back-note">이 일기는 이 브라우저에 자동 저장됩니다 (localStorage)</p>
   </div>
 </div>
 
@@ -503,8 +543,8 @@
 
 <div class="modal-bg" id="endingModal">
   <div class="deed">
-    <div class="seal" id="modalSeal">이사</div>
-    <h2 id="modalTitle">이사 완료!</h2>
+    <div class="seal diary-font" id="modalSeal">이사</div>
+    <h2 id="modalTitle" class="diary-font">이사 완료!</h2>
     <p id="modalDesc1"></p>
     <p id="modalDesc2"></p>
     <button id="continueBtn">계속하기</button>
@@ -526,14 +566,10 @@
     markets: {
       hsElec: { name:"형식전자", price:10000, minPrice:1000, unit:"주",
                 shares:0, avgPrice:0, dir:1, history:[], historyFlags:[],
-                drift:0.004, vol:0.05, tickMs:2000, limitCooldownUntil:0, hint:null, newsText:"" },
-      hsNix:  { name:"형식닉스", price:3000, minPrice:300, unit:"주",
+                drift:0.004, vol:0.05, tickMs:2000, limitCooldownUntil:0, hint:null, newsText:"", calm:false },
+      gold:   { name:"돌반지 금", price:450000, minPrice:100000, unit:"돈",
                 shares:0, avgPrice:0, dir:1, history:[], historyFlags:[],
-                drift:0.002, vol:0.09, tickMs:2000, limitCooldownUntil:0, hint:null, newsText:"" },
-      realty: { name:"힐스테이트 오피스텔", price:50000000, minPrice:5000000, unit:"채",
-                shares:0, avgPrice:0, dir:1, history:[], historyFlags:[],
-                drift:0.003, vol:0.02, tickMs:4000, limitCooldownUntil:0, hint:null, newsText:"",
-                rentYieldPerSec:0.00008 }
+                drift:0.0015, vol:0.015, tickMs:5000, limitCooldownUntil:0, hint:null, newsText:"", calm:true }
     },
     family: { kids:0 },
     modalQueue: [],
@@ -542,7 +578,7 @@
     postGoal: null,
     upgrades: {
       overtime:   { name:"야근 수당",   desc:"클릭당 수입 +3,000원",      baseCost:100000,    cost:0, level:0, scale:1.18, type:"click", value:3000 },
-      autoclick:  { name:"자동 출납기", desc:"1.5초마다 자동으로 일합니다 (클릭 1회와 동일)", baseCost:5000000, cost:0, level:0, scale:1, type:"auto", value:1, maxLevel:1 },
+      autoclick:  { name:"자동 출납기", desc:"1.5초마다 자동으로 일합니다 (클릭 1회와 동일)", baseCost:1000000, cost:0, level:0, scale:1, type:"auto", value:1, maxLevel:1 },
       delivery:   { name:"배달 부업",   desc:"자동 수입 +5,000원/초",      baseCost:600000,    cost:0, level:0, scale:1.2,  type:"cps",   value:5000 },
       savings:    { name:"예금 이자",   desc:"자동 수입 +20,000원/초",     baseCost:2500000,   cost:0, level:0, scale:1.2,  type:"cps",   value:20000 },
       lecture:    { name:"재테크 강의", desc:"모든 수입 x1.3배",           baseCost:15000000,  cost:0, level:0, scale:1.8,  type:"mult",  value:0.3, maxLevel:6 },
@@ -664,15 +700,10 @@
 
   function currentClickValue(){ return state.clickBase * state.clickMult; }
   function currentCps(){ return state.cps * state.clickMult; }
-  function realtyRentRate(){
-    const r = state.markets.realty;
-    return r.shares > 0 ? r.price * r.shares * r.rentYieldPerSec : 0;
-  }
-  function totalIncomeRate(){ return currentCps() + realtyRentRate(); }
 
   function render(){
     document.getElementById("moneyDisplay").textContent = Math.floor(state.money).toLocaleString("ko-KR");
-    document.getElementById("incomeDisplay").textContent = "+" + fmt(totalIncomeRate()) + " / 초";
+    document.getElementById("incomeDisplay").textContent = "+" + fmt(currentCps()) + " / 초";
     document.getElementById("clickValueText").textContent = "클릭당 +" + fmt(currentClickValue());
     const goal = currentGoal();
     document.getElementById("goalText").textContent = fmt(goal);
@@ -813,6 +844,7 @@
 
   function maybeLimitEvent(key){
     const m = state.markets[key];
+    if(m.calm) return false;
     if(Date.now() < m.limitCooldownUntil) return false;
     if(Math.random() >= 0.05) return false;
     m.limitCooldownUntil = Date.now() + 25000;
@@ -839,7 +871,9 @@
   const BEARISH_NEWS = n => [`${n}, 단기 조정 우려`, `${n} 관련 악재설 유포`, `${n}, 매물 출회 조짐`];
 
   function maybeNewsHint(){
-    const key = MARKET_KEYS[Math.floor(Math.random() * MARKET_KEYS.length)];
+    const eligible = MARKET_KEYS.filter(k => !state.markets[k].calm);
+    if(eligible.length === 0) return;
+    const key = eligible[Math.floor(Math.random() * eligible.length)];
     const m = state.markets[key];
     if(m.hint) return;
     if(Math.random() >= 0.2) return;
@@ -874,7 +908,7 @@
     const xAt = i => i * stepX;
     const yAt = p => h - ((p - yMin) / (yMax - yMin)) * h;
 
-    ctx.strokeStyle = "rgba(122,111,82,.22)";
+    ctx.strokeStyle = "rgba(168,136,106,.22)";
     ctx.lineWidth = 1;
     for(let g = 1; g <= 3; g++){
       const gy = Math.round(h * (g / 4)) + 0.5;
@@ -882,11 +916,11 @@
     }
 
     const trendUp = prices[prices.length - 1] >= prices[0];
-    const lineColor = trendUp ? "#2e6b48" : "#a53a32";
+    const lineColor = trendUp ? "#3fa980" : "#ef6461";
 
     const grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, trendUp ? "rgba(46,107,72,.25)" : "rgba(165,58,50,.25)");
-    grad.addColorStop(1, trendUp ? "rgba(46,107,72,0)" : "rgba(165,58,50,0)");
+    grad.addColorStop(0, trendUp ? "rgba(63,169,128,.25)" : "rgba(239,100,97,.25)");
+    grad.addColorStop(1, trendUp ? "rgba(63,169,128,0)" : "rgba(239,100,97,0)");
     ctx.beginPath();
     ctx.moveTo(xAt(0), yAt(prices[0]));
     prices.forEach((p, i) => ctx.lineTo(xAt(i), yAt(p)));
@@ -926,23 +960,23 @@
       const x = xAt(i), y = yAt(p);
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "#f5efdc";
+      ctx.fillStyle = "#fffaf1";
       ctx.fill();
       ctx.lineWidth = 2.5;
-      ctx.strokeStyle = "#b1872f";
+      ctx.strokeStyle = "#ff8f6b";
       ctx.stroke();
     });
 
     if(hoverIdx != null && hoverIdx >= 0 && hoverIdx < prices.length){
       const hx = xAt(hoverIdx), hy = yAt(prices[hoverIdx]);
       ctx.setLineDash([3, 3]);
-      ctx.strokeStyle = "rgba(122,111,82,.5)";
+      ctx.strokeStyle = "rgba(168,136,106,.5)";
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(hx, 0); ctx.lineTo(hx, h); ctx.stroke();
       ctx.setLineDash([]);
       ctx.beginPath();
       ctx.arc(hx, hy, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#f5efdc";
+      ctx.fillStyle = "#fffaf1";
       ctx.fill();
       ctx.lineWidth = 2;
       ctx.strokeStyle = lineColor;
@@ -1008,15 +1042,16 @@
 
   document.getElementById("workBtn").addEventListener("click", doWork);
 
-  // ---- Lotto ---- (real Lotto 6/45 price & odds)
-  const LOTTO_COST = 1000;
+  // ---- Lotto ---- (5장 묶음 구매, 당첨 확률 완화)
+  const LOTTO_COST = 50000;
+  const LOTTO_COUNT = 5;
   const LOTTO_COOLDOWN_MS = 1500;
   const LOTTO_TIERS = [
-    { label:"1등", prize:2000000000, p:1/1000000 },
-    { label:"2등", prize:30000000,   p:1/100000 },
-    { label:"3등", prize:1500000,    p:1/5000 },
-    { label:"4등", prize:50000,      p:1/300 },
-    { label:"5등", prize:5000,       p:1/20 }
+    { label:"1등", prize:2000000000, p:1/200000 },
+    { label:"2등", prize:30000000,   p:1/20000 },
+    { label:"3등", prize:1500000,    p:1/1000 },
+    { label:"4등", prize:50000,      p:1/60 },
+    { label:"5등", prize:5000,       p:1/8 }
   ];
 
   function drawLotto(){
@@ -1025,27 +1060,32 @@
     state.lottoCooldownUntil = Date.now() + LOTTO_COOLDOWN_MS;
     state.money -= LOTTO_COST;
 
-    const r = Math.random();
-    let acc = 0, hit = null;
-    for(const tier of LOTTO_TIERS){
-      acc += tier.p;
-      if(r < acc){ hit = tier; break; }
+    let totalPrize = 0;
+    const hits = [];
+    for(let i=0;i<LOTTO_COUNT;i++){
+      const r = Math.random();
+      let acc = 0, hit = null;
+      for(const tier of LOTTO_TIERS){
+        acc += tier.p;
+        if(r < acc){ hit = tier; break; }
+      }
+      if(hit){ hits.push(hit); totalPrize += hit.prize; }
     }
+    state.money += totalPrize;
 
     const resultEl = document.getElementById("lottoResult");
-    if(hit){
-      state.money += hit.prize;
-      resultEl.textContent = `🎉 ${hit.label} 당첨! +${fmt(hit.prize)}`;
+    if(hits.length){
+      const summary = hits.map(h=>h.label).join(", ");
+      resultEl.textContent = `🎉 ${hits.length}장 당첨 (${summary})! +${fmt(totalPrize)}`;
       resultEl.className = "lotto-result win";
-      if(hit.prize >= LOTTO_TIERS[2].prize){
-        log(`로또 ${hit.label} 당첨! +${fmt(hit.prize)}`, "gain");
-        showToast(`🎉 로또 ${hit.label} 당첨! +${fmt(hit.prize)}`, "gain", 5000);
-      } else {
-        log(`로또 ${hit.label} 당첨 (+${fmt(hit.prize)})`, "gain");
+      log(`로또 5장 구매 · ${hits.length}장 당첨 (${summary}) +${fmt(totalPrize)}`, "gain");
+      if(hits.some(h => h.prize >= LOTTO_TIERS[2].prize)){
+        showToast(`🎉 로또 당첨! (${summary}) +${fmt(totalPrize)}`, "gain", 5000);
       }
     } else {
-      resultEl.textContent = "꽝... 다음 기회에 😢";
+      resultEl.textContent = "5장 다 꽝... 다음 기회에 😢";
       resultEl.className = "lotto-result";
+      log("로또 5장 구매 · 전부 꽝", "loss");
     }
     render();
   }
@@ -1058,7 +1098,7 @@
       btn.textContent = `잠시만요... (${(remainMs/1000).toFixed(1)}초)`;
     } else {
       btn.disabled = state.money < LOTTO_COST;
-      btn.textContent = "🎟️ 로또 한 장 사기 (1,000원)";
+      btn.textContent = "🎟️ 로또 5장 사기 (50,000원)";
     }
   }
   document.getElementById("lottoBtn").addEventListener("click", drawLotto);
@@ -1167,9 +1207,8 @@
 
   setInterval(()=>{
     state.lastActiveAt = Date.now();
-    const rate = totalIncomeRate();
-    if(rate > 0){
-      state.money += rate / 5;
+    if(currentCps() > 0){
+      state.money += currentCps() / 5;
       render();
     }
   }, 200);
@@ -1235,7 +1274,7 @@
     state.lastActiveAt = now;
     if(elapsedSec < 30) return;
     elapsedSec = Math.min(elapsedSec, OFFLINE_CAP_SEC);
-    const income = totalIncomeRate() * elapsedSec;
+    const income = currentCps() * elapsedSec;
     if(income > 0){
       pendingOffline = { income, elapsedSec };
       updateOfflineButton();
@@ -1294,7 +1333,7 @@
     setupMarketChartHover(key);
     drawMarketChart(key);
   });
-  log("통장을 개설했습니다. 형식이의 내집마련과 육아를 응원해주세요.", "event");
+  log("일기를 시작했습니다. 형식이의 내집마련과 육아를 응원해주세요.", "event");
 })();
 </script>
 
