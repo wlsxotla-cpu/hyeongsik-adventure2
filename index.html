@@ -426,7 +426,7 @@
       <div class="holder">
         <span class="holder-avatar">🧑‍💼</span>
         <div>
-          <div class="holder-name" id="holderName">주인공 · 형식 (32세)</div>
+          <div class="holder-name" id="holderName">주인공 · 형식 (32세 0개월)</div>
           <div class="holder-sub" id="statusSub">서울 강동구 빌라 거주 · 기혼</div>
         </div>
       </div>
@@ -705,8 +705,19 @@
     return state.family.kids > 0 ? " · 슬하 " + state.family.kids + "명" : "";
   }
 
+  function ageDetail(){
+    const elapsedMs = Date.now() - state.startedAt;
+    const totalMonths = Math.floor(elapsedMs / (AGE_MS_PER_YEAR / 12));
+    return { years: state.startAge + Math.floor(totalMonths / 12), months: totalMonths % 12 };
+  }
   function currentAge(){
-    return state.startAge + Math.floor((Date.now() - state.startedAt) / AGE_MS_PER_YEAR);
+    return ageDetail().years;
+  }
+  function updateAgeDisplay(){
+    const el = document.getElementById("holderName");
+    if(!el) return;
+    const a = ageDetail();
+    el.textContent = `주인공 · 형식 (${a.years}세 ${a.months}개월)`;
   }
 
   function updateStageText(progress){
@@ -736,7 +747,7 @@
     document.getElementById("progressFill").style.width = (progress*100).toFixed(1) + "%";
     document.getElementById("progressText").textContent = (progress*100).toFixed(1) + "%";
     updateStageText(progress);
-    document.getElementById("holderName").textContent = `주인공 · 형식 (${currentAge()}세)`;
+    updateAgeDisplay();
 
     MARKET_KEYS.forEach(renderMarket);
 
@@ -1128,6 +1139,7 @@
   }
   document.getElementById("lottoBtn").addEventListener("click", drawLotto);
   setInterval(updateLottoButton, 150);
+  setInterval(updateAgeDisplay, 1000);
 
   const events = [
     { text:"명절 상여금이 들어왔다", type:"gain", amountFn: s => Math.max(50000, s.money*0.02) },
