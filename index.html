@@ -545,21 +545,6 @@
   </div>
 
   <div class="ledger">
-    <div class="ledger-head diary-font">📊 나의 기록</div>
-    <div class="stock-hold" id="statTotalClicks">총 클릭 수 0회</div>
-    <div class="stock-hold" id="statTotalEarned">누적 수입 0원</div>
-    <div class="stock-hold" id="statInvestProfit">투자 누적 수익 0원</div>
-    <div class="stock-hold" id="statMultBonus">현재 배율 보너스 +0%</div>
-  </div>
-
-  <div class="ledger">
-    <div class="ledger-head diary-font">🌅 인생 리셋</div>
-    <div class="stock-hold" id="prestigeInfo">환생 0회 · 영구 배율 +0%</div>
-    <button class="lotto-btn" id="rebirthBtn" style="margin-top:10px;">🌅 다시 태어나기</button>
-    <div class="lotto-odds" id="prestigeHint">잠실 40평에 도달하면 해금됩니다.</div>
-  </div>
-
-  <div class="ledger">
     <div class="ledger-head diary-font">📝 오늘의 일기</div>
     <div id="logList"></div>
   </div>
@@ -612,9 +597,6 @@
     modalQueue: [],
     startedAt: Date.now(),
     startAge: 32,
-    prestige: { count:0 },
-    stats: { totalClicks:0, totalEarnedLifetime:0, investProfitLifetime:0 },
-    everReachedFinal: false,
     stageIndex: 0,
     currentHome: "서울 강동구 빌라 거주 · 기혼",
     postGoal: null,
@@ -643,11 +625,6 @@
   function fmt(n){
     n = Math.floor(n);
     return n.toLocaleString("ko-KR") + "원";
-  }
-
-  function addMoney(amount){
-    state.money += amount;
-    if(amount > 0) state.stats.totalEarnedLifetime += amount;
   }
 
   let toastTimer = null;
@@ -712,7 +689,7 @@
       btnText:"계속하기",
       apply(){
         const gain = Math.max(200000, state.money*0.015);
-        addMoney(gain);
+        state.money += gain;
         log(`첫째 초등학교 입학 축하금 +${fmt(gain)}`, "gain");
       }
     }
@@ -760,10 +737,8 @@
     document.getElementById("statusSub").textContent = state.currentHome + familySuffix();
   }
 
-  function currentPrestigeMult(){ return 1 + state.prestige.count * 0.15; }
-  function currentInvestMult(){ return 1 + Math.floor(state.stats.investProfitLifetime / 50000000) * 0.02; }
-  function currentClickValue(){ return state.clickBase * state.clickMult * currentPrestigeMult() * currentInvestMult(); }
-  function currentCps(){ return state.cps * state.clickMult * currentPrestigeMult() * currentInvestMult(); }
+  function currentClickValue(){ return state.clickBase * state.clickMult; }
+  function currentCps(){ return state.cps * state.clickMult; }
   function realtyRentRate(){
     const r = state.markets.realty;
     return r.shares > 0 ? r.price * r.shares * r.rentYieldPerSec : 0;
@@ -795,8 +770,6 @@
 
     renderUpgrades();
     updateLottoButton();
-    renderStats();
-    renderPrestige();
 
     if(!state.modalOpen && state.money >= goal){
       state.modalOpen = true;
@@ -862,60 +835,6 @@
     });
   }
 
-  function renderStats(){
-    document.getElementById("statTotalClicks").textContent = "총 클릭 수 " + Math.floor(state.stats.totalClicks).toLocaleString("ko-KR") + "회";
-    document.getElementById("statTotalEarned").textContent = "누적 수입 " + fmt(state.stats.totalEarnedLifetime);
-    document.getElementById("statInvestProfit").textContent = "투자 누적 수익 " + fmt(state.stats.investProfitLifetime);
-    const bonusPct = Math.round((currentPrestigeMult() * currentInvestMult() - 1) * 100);
-    document.getElementById("statMultBonus").textContent = "현재 배율 보너스 +" + bonusPct + "%";
-  }
-
-  function renderPrestige(){
-    const bonusPct = Math.round((currentPrestigeMult() - 1) * 100);
-    document.getElementById("prestigeInfo").textContent = `환생 ${state.prestige.count}회 · 영구 배율 +${bonusPct}%`;
-    const btn = document.getElementById("rebirthBtn");
-    const hint = document.getElementById("prestigeHint");
-    if(state.everReachedFinal){
-      btn.disabled = false;
-      hint.textContent = "현재 진행(자산·업그레이드·투자·나이)은 초기화되지만 영구 배율은 계속 남습니다.";
-    } else {
-      btn.disabled = true;
-      hint.textContent = "잠실 40평에 도달하면 해금됩니다.";
-    }
-  }
-
-  function doRebirth(){
-    if(!state.everReachedFinal) return;
-    const ok = window.confirm("정말 다시 태어날까요? 현재 자산·업그레이드·투자·나이가 전부 초기화되고, 대신 영구 배율 보너스가 영원히 남습니다.");
-    if(!ok) return;
-    state.money = 0;
-    state.clickBase = 2000;
-    state.clickMult = 1;
-    state.cps = 0;
-    state.autoClick = false;
-    state.stageIndex = 0;
-    state.currentHome = "서울 강동구 빌라 거주 · 기혼";
-    state.postGoal = null;
-    state.family = { kids:0 };
-    state.startedAt = Date.now();
-    state.modalQueue = [];
-    state.modalOpen = false;
-    Object.keys(state.upgrades).forEach(key=>{
-      state.upgrades[key] = Object.assign({}, defaultUpgrades[key]);
-    });
-    Object.keys(state.markets).forEach(key=>{
-      state.markets[key] = Object.assign({}, defaultMarkets[key]);
-      state.markets[key].history = [state.markets[key].price, state.markets[key].price];
-      state.markets[key].historyFlags = [false, false];
-    });
-    state.prestige.count += 1;
-    log(`환생! 새로운 인생을 시작합니다 (영구 배율 +${Math.round((currentPrestigeMult()-1)*100)}%)`, "event");
-    showToast("🌅 새로운 인생이 시작되었습니다!", "move", 4000);
-    render();
-    MARKET_KEYS.forEach(key=> drawMarketChart(key));
-  }
-  document.getElementById("rebirthBtn").addEventListener("click", doRebirth);
-
   function buyUpgrade(key){
     const u = state.upgrades[key];
     if(!u) return;
@@ -937,8 +856,7 @@
 
   function doWork(){
     const gain = currentClickValue();
-    addMoney(gain);
-    state.stats.totalClicks += 1;
+    state.money += gain;
     spawnFloat(gain);
     render();
   }
@@ -1168,8 +1086,7 @@
     const value = Math.floor(sellShares * m.price);
     const costBasis = m.avgPrice * sellShares;
     const profit = value - costBasis;
-    addMoney(value);
-    if(profit > 0) state.stats.investProfitLifetime += profit;
+    state.money += value;
     const label = fraction >= 1 ? "전량 매도" : "50% 매도";
     log(`${m.name} ${sellShares}${m.unit} ${label} (${fmt(value)}, 손익 ${profit>=0?"+":""}${fmt(profit)})`, profit >= 0 ? "gain" : "loss");
     m.shares -= sellShares;
@@ -1217,7 +1134,7 @@
       }
       if(hit){ hits.push(hit); totalPrize += hit.prize; }
     }
-    addMoney(totalPrize);
+    state.money += totalPrize;
 
     const resultEl = document.getElementById("lottoResult");
     if(hits.length){
@@ -1274,7 +1191,7 @@
     if(ev.amountFn){
       const raw = ev.amountFn(state);
       if(ev.type === "gain"){
-        addMoney(raw);
+        state.money += raw;
         logText += ` (+${fmt(raw)})`;
       } else {
         const delta = Math.min(state.money, raw);
@@ -1312,7 +1229,6 @@
       const s = STORY_STAGES[state.stageIndex];
       const isFinal = state.stageIndex === STORY_STAGES.length - 1;
       const finishedIndex = state.stageIndex;
-      if(isFinal) state.everReachedFinal = true;
       state.currentHome = s.sub;
       log(s.moveMsg, "gain");
       showToast(s.moveMsg, "move");
@@ -1358,10 +1274,9 @@
     const rentRate = realtyRentRate();
     const rate = currentCps() + rentRate;
     if(rate > 0){
-      addMoney(rate / 5);
+      state.money += rate / 5;
       if(rentRate > 0){
         state.markets.realty.totalRentEarned = (state.markets.realty.totalRentEarned || 0) + rentRate / 5;
-        state.stats.investProfitLifetime += rentRate / 5;
       }
       render();
     }
@@ -1398,9 +1313,6 @@
         state.markets[key] = Object.assign({}, defaultMarkets[key], loadedMarkets[key] || {});
       });
       state.family = Object.assign({kids:0}, state.family || {});
-      state.prestige = Object.assign({count:0}, state.prestige || {});
-      state.stats = Object.assign({totalClicks:0, totalEarnedLifetime:0, investProfitLifetime:0}, state.stats || {});
-      state.everReachedFinal = !!state.everReachedFinal;
     }catch(e){}
   }
   setInterval(save, 5000);
@@ -1445,10 +1357,9 @@
 
   document.getElementById("offlineBtn").addEventListener("click", ()=>{
     if(!pendingOffline) return;
-    addMoney(pendingOffline.income);
+    state.money += pendingOffline.income;
     if(pendingOffline.rentPortion > 0){
       state.markets.realty.totalRentEarned = (state.markets.realty.totalRentEarned || 0) + pendingOffline.rentPortion;
-      state.stats.investProfitLifetime += pendingOffline.rentPortion;
     }
     log(`오프라인 수입 (${offlineTimeText(pendingOffline.elapsedSec)}) +${fmt(pendingOffline.income)}`, "gain");
     showToast(`💤 오프라인 수입 +${fmt(pendingOffline.income)}`, "gain");
