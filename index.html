@@ -529,10 +529,6 @@
         <button class="mkt-buyall" id="realtyBuyAll">전액 매수</button>
         <button class="mkt-sell" id="realtySell">전량 매도</button>
       </div>
-      <div class="stock-btns">
-        <button class="mkt-buyall" id="realtyBuyHalf">50% 매수</button>
-        <button class="mkt-sell" id="realtySellHalf">50% 매도</button>
-      </div>
     </div>
   </div>
 
@@ -804,8 +800,10 @@
 
     document.getElementById(key + "BuyAll").disabled = state.money < m.price;
     document.getElementById(key + "Sell").disabled = m.shares <= 0;
-    document.getElementById(key + "BuyHalf").disabled = Math.floor((state.money * 0.5) / m.price) <= 0;
-    document.getElementById(key + "SellHalf").disabled = Math.floor(m.shares * 0.5) <= 0;
+    const buyHalfEl = document.getElementById(key + "BuyHalf");
+    if(buyHalfEl) buyHalfEl.disabled = Math.floor((state.money * 0.5) / m.price) <= 0;
+    const sellHalfEl = document.getElementById(key + "SellHalf");
+    if(sellHalfEl) sellHalfEl.disabled = Math.floor(m.shares * 0.5) <= 0;
     const newsEl = document.getElementById(key + "News");
     if(newsEl) newsEl.textContent = m.newsText || "";
   }
@@ -1099,8 +1097,10 @@
   MARKET_KEYS.forEach(key=>{
     document.getElementById(key + "BuyAll").addEventListener("click", ()=> buyMarket(key, 1));
     document.getElementById(key + "Sell").addEventListener("click", ()=> sellMarket(key, 1));
-    document.getElementById(key + "BuyHalf").addEventListener("click", ()=> buyMarket(key, 0.5));
-    document.getElementById(key + "SellHalf").addEventListener("click", ()=> sellMarket(key, 0.5));
+    const buyHalfBtn = document.getElementById(key + "BuyHalf");
+    if(buyHalfBtn) buyHalfBtn.addEventListener("click", ()=> buyMarket(key, 0.5));
+    const sellHalfBtn = document.getElementById(key + "SellHalf");
+    if(sellHalfBtn) sellHalfBtn.addEventListener("click", ()=> sellMarket(key, 0.5));
   });
 
   document.getElementById("workBtn").addEventListener("click", doWork);
