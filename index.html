@@ -480,6 +480,10 @@
         <button class="mkt-buyall" id="hsElecBuyAll">전액 매수</button>
         <button class="mkt-sell" id="hsElecSell">전량 매도</button>
       </div>
+      <div class="stock-btns">
+        <button class="mkt-buyall" id="hsElecBuyHalf">50% 매수</button>
+        <button class="mkt-sell" id="hsElecSellHalf">50% 매도</button>
+      </div>
     </div>
   </div>
 
@@ -500,6 +504,10 @@
         <button class="mkt-buyall" id="goldBuyAll">전액 매수</button>
         <button class="mkt-sell" id="goldSell">전량 매도</button>
       </div>
+      <div class="stock-btns">
+        <button class="mkt-buyall" id="goldBuyHalf">50% 매수</button>
+        <button class="mkt-sell" id="goldSellHalf">50% 매도</button>
+      </div>
     </div>
   </div>
 
@@ -516,9 +524,14 @@
         <div class="stock-tooltip" id="realtyTooltip"></div>
       </div>
       <div class="stock-pl mono" id="realtyPL">평가금액 0원</div>
+      <div class="stock-pl mono" id="realtyRent">임대수익 +0원/초 · 누적 0원</div>
       <div class="stock-btns">
         <button class="mkt-buyall" id="realtyBuyAll">전액 매수</button>
         <button class="mkt-sell" id="realtySell">전량 매도</button>
+      </div>
+      <div class="stock-btns">
+        <button class="mkt-buyall" id="realtyBuyHalf">50% 매수</button>
+        <button class="mkt-sell" id="realtySellHalf">50% 매도</button>
       </div>
     </div>
   </div>
@@ -581,8 +594,8 @@
                 drift:0.0015, vol:0.015, tickMs:5000, limitCooldownUntil:0, hint:null, newsText:"", calm:true },
       realty: { name:"힐스테이트 오피스텔", price:50000000, minPrice:5000000, unit:"채",
                 shares:0, avgPrice:0, dir:1, history:[], historyFlags:[],
-                drift:0.003, vol:0.02, tickMs:4000, limitCooldownUntil:0, hint:null, newsText:"",
-                rentYieldPerSec:0.00008 }
+                drift:0.0025, vol:0.008, tickMs:4000, limitCooldownUntil:0, hint:null, newsText:"", calm:true,
+                rentYieldPerSec:0.00008, totalRentEarned:0 }
     },
     family: { kids:0 },
     modalQueue: [],
@@ -751,6 +764,12 @@
 
     MARKET_KEYS.forEach(renderMarket);
 
+    const realtyRentEl = document.getElementById("realtyRent");
+    if(realtyRentEl){
+      const r = state.markets.realty;
+      realtyRentEl.textContent = `임대수익 +${fmt(realtyRentRate())}/초 · 누적 ${fmt(r.totalRentEarned || 0)}`;
+    }
+
     document.getElementById("autoBadge").classList.toggle("on", !!state.autoClick);
 
     renderUpgrades();
@@ -785,6 +804,8 @@
 
     document.getElementById(key + "BuyAll").disabled = state.money < m.price;
     document.getElementById(key + "Sell").disabled = m.shares <= 0;
+    document.getElementById(key + "BuyHalf").disabled = Math.floor((state.money * 0.5) / m.price) <= 0;
+    document.getElementById(key + "SellHalf").disabled = Math.floor(m.shares * 0.5) <= 0;
     const newsEl = document.getElementById(key + "News");
     if(newsEl) newsEl.textContent = m.newsText || "";
   }
@@ -1045,35 +1066,41 @@
     window.addEventListener("resize", ()=> drawMarketChart(key, null));
   }
 
-  function buyAllMarket(key){
+  function buyMarket(key, fraction){
     const m = state.markets[key];
-    const shares = Math.floor(state.money / m.price);
+    const budget = state.money * fraction;
+    const shares = Math.floor(budget / m.price);
     if(shares <= 0) return;
     const cost = shares * m.price;
     const oldCostBasis = m.avgPrice * m.shares;
     state.money -= cost;
     m.shares += shares;
     m.avgPrice = (oldCostBasis + cost) / m.shares;
-    log(`${m.name} ${shares}${m.unit} 전액 매수 (평단가 ${fmt(m.avgPrice)})`, "gain");
+    const label = fraction >= 1 ? "전액 매수" : "50% 매수";
+    log(`${m.name} ${shares}${m.unit} ${label} (평단가 ${fmt(m.avgPrice)})`, "gain");
     render();
   }
 
-  function sellAllMarket(key){
+  function sellMarket(key, fraction){
     const m = state.markets[key];
-    if(m.shares <= 0) return;
-    const value = Math.floor(m.shares * m.price);
-    const costBasis = m.avgPrice * m.shares;
+    const sellShares = fraction >= 1 ? m.shares : Math.floor(m.shares * fraction);
+    if(sellShares <= 0) return;
+    const value = Math.floor(sellShares * m.price);
+    const costBasis = m.avgPrice * sellShares;
     const profit = value - costBasis;
     state.money += value;
-    log(`${m.name} ${m.shares}${m.unit} 전량 매도 (${fmt(value)}, 손익 ${profit>=0?"+":""}${fmt(profit)})`, profit >= 0 ? "gain" : "loss");
-    m.shares = 0;
-    m.avgPrice = 0;
+    const label = fraction >= 1 ? "전량 매도" : "50% 매도";
+    log(`${m.name} ${sellShares}${m.unit} ${label} (${fmt(value)}, 손익 ${profit>=0?"+":""}${fmt(profit)})`, profit >= 0 ? "gain" : "loss");
+    m.shares -= sellShares;
+    if(m.shares <= 0){ m.shares = 0; m.avgPrice = 0; }
     render();
   }
 
   MARKET_KEYS.forEach(key=>{
-    document.getElementById(key + "BuyAll").addEventListener("click", ()=> buyAllMarket(key));
-    document.getElementById(key + "Sell").addEventListener("click", ()=> sellAllMarket(key));
+    document.getElementById(key + "BuyAll").addEventListener("click", ()=> buyMarket(key, 1));
+    document.getElementById(key + "Sell").addEventListener("click", ()=> sellMarket(key, 1));
+    document.getElementById(key + "BuyHalf").addEventListener("click", ()=> buyMarket(key, 0.5));
+    document.getElementById(key + "SellHalf").addEventListener("click", ()=> sellMarket(key, 0.5));
   });
 
   document.getElementById("workBtn").addEventListener("click", doWork);
@@ -1244,9 +1271,13 @@
 
   setInterval(()=>{
     state.lastActiveAt = Date.now();
-    const rate = totalIncomeRate();
+    const rentRate = realtyRentRate();
+    const rate = currentCps() + rentRate;
     if(rate > 0){
       state.money += rate / 5;
+      if(rentRate > 0){
+        state.markets.realty.totalRentEarned = (state.markets.realty.totalRentEarned || 0) + rentRate / 5;
+      }
       render();
     }
   }, 200);
@@ -1286,6 +1317,10 @@
   }
   setInterval(save, 5000);
   window.addEventListener("beforeunload", save);
+  window.addEventListener("pagehide", save);
+  document.addEventListener("visibilitychange", ()=>{
+    if(document.visibilityState === "hidden") save();
+  });
 
   const OFFLINE_CAP_SEC = 8 * 3600;
   let pendingOffline = null;
@@ -1312,9 +1347,10 @@
     state.lastActiveAt = now;
     if(elapsedSec < 30) return;
     elapsedSec = Math.min(elapsedSec, OFFLINE_CAP_SEC);
-    const income = totalIncomeRate() * elapsedSec;
+    const rentPortion = realtyRentRate() * elapsedSec;
+    const income = currentCps() * elapsedSec + rentPortion;
     if(income > 0){
-      pendingOffline = { income, elapsedSec };
+      pendingOffline = { income, elapsedSec, rentPortion };
       updateOfflineButton();
     }
   }
@@ -1322,6 +1358,9 @@
   document.getElementById("offlineBtn").addEventListener("click", ()=>{
     if(!pendingOffline) return;
     state.money += pendingOffline.income;
+    if(pendingOffline.rentPortion > 0){
+      state.markets.realty.totalRentEarned = (state.markets.realty.totalRentEarned || 0) + pendingOffline.rentPortion;
+    }
     log(`오프라인 수입 (${offlineTimeText(pendingOffline.elapsedSec)}) +${fmt(pendingOffline.income)}`, "gain");
     showToast(`💤 오프라인 수입 +${fmt(pendingOffline.income)}`, "gain");
     pendingOffline = null;
